@@ -1,6 +1,7 @@
 import collections
 import logging
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -187,6 +188,7 @@ class History(object):
                 'scheduled_timestamp': event.timestamp,
                 'input': event.input,
                 'task_list': event.task_list['name'],
+                'control': getattr(event, 'control', None),
             }
             if event.activity_id not in self._activities:
                 self._activities[event.activity_id] = activity
@@ -371,7 +373,10 @@ class History(object):
             workflow['details'] = getattr(event, 'details', None)
             workflow['failed_id'] = event.id
             workflow['failed_timestamp'] = event.timestamp
-            # FIXME add retry here too?
+            if 'retry' not in workflow:
+                workflow['retry'] = 0
+            else:
+                workflow['retry'] += 1
         elif event.state == 'timed_out':
             workflow = get_workflow()
             workflow['state'] = event.state

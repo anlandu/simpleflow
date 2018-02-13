@@ -1,9 +1,12 @@
+from typing import Optional
+
 from simpleflow import (
     activity,
     Workflow,
     futures,
 )
 from simpleflow.canvas import Group
+from simpleflow.task import TaskFailureContext
 
 
 @activity.with_attributes(task_list='quickstart', version='example',
@@ -22,6 +25,7 @@ class FailingWorkflow(Workflow):
     name = 'failing'
     version = 'example'
     task_list = 'example'
+    retry = 1
 
     def run(self):
         x = self.submit(fail_but_dont_raise)
@@ -48,3 +52,7 @@ class NotFailingWorkflow(Workflow):
 
     def on_completed(self, history):
         print('workflow completed!')
+
+    def on_task_failure(self, failure_context):
+        # type: (TaskFailureContext) -> Optional[TaskFailureContext]
+        pass

@@ -4,6 +4,7 @@ import abc
 from copy import deepcopy
 
 import time
+from enum import Enum
 
 import six
 
@@ -255,3 +256,20 @@ class CancelTimerTask(Task):
     def execute(self):
         # Local execution: no-op
         return
+
+
+class TaskFailureContext(object):
+    class Decision(Enum):
+        none = 0
+        abort = 1
+        ignore = 2
+        retry_now = 3
+        retry_later = 4  # not implemented yet
+        cancel = 5
+
+    def __init__(self, a_task, event, future, history=None):
+        self.a_task = a_task
+        self.event = event
+        self.future = future
+        self.history = history
+        self.decision = TaskFailureContext.Decision.none

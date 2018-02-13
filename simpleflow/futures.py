@@ -147,7 +147,7 @@ class Future(object):
         """
         Set state to finished with an exception.
         :param exception:
-        :type exception: Exception
+        :type exception: Optional[Exception]
         :return:
         """
         self._state = FINISHED
